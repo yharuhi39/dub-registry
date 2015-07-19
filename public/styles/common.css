@@ -63,11 +63,13 @@ div#header {
 	padding: 6pt 12pt;
 	background-color: #eee;
 	background-image: -webkit-linear-gradient(top, #fff, #eee);
-	background-image:    -moz-linear-gradient(top, #fff, #eee);
+	background-image:    -moz-linear-gradient(top, #fff8f8, #ddd4d4);
 	background-image:     -ms-linear-gradient(top, #fff, #eee);
 	background-image:      -o-linear-gradient(top, #fff, #eee);
-	border-bottom: 1px solid #ddd;
+	border-bottom: 1px solid #333;
 }
+
+/*div#header, div#header a { color: #fff8f8; }*/
 
 div#header #logo {
 	vertical-align: bottom;
@@ -97,8 +99,9 @@ p.warn {
 
 #title {
 	display: inline-block;
-	margin-left: 8pt;
-	vertical-align: bottom;
+	vertical-align: top;
+	margin-left: 4pt;
+	margin-top: 9pt;
 }
 
 #title > h1 {

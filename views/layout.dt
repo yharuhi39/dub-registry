@@ -21,7 +21,7 @@ html
 					p
 						a(href='#{req.rootDir}login?redirect=#{req.requestURL == "/" ? "/my_packages" : req.requestURL}') Log in
 			a.blind(href="#{req.rootDir}")
-				img#logo(src="#{req.rootDir}images/logo-small.png", alt="DUB logo", width="75", height="48")
+				img#logo(src="#{req.rootDir}images/logo-small.png", alt="DUB logo", width="64", height="64", srcset="#{req.rootDir}images/logo-medium.png 96w, #{req.rootDir}images/logo-large.png 128w")
 			div#title
 				| DUB - The D package registry
 				h1= title
