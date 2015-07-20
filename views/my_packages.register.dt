@@ -2,7 +2,7 @@ extends layout
 
 block title
 	- auto title = "Add new package";
-	
+
 block body
 
 	form(method="POST", action="#{req.rootDir}register_package")
@@ -16,6 +16,10 @@ block body
 		p
 			label(for="project") Repository name:
 			input(type="text", name="project", value=req.form.get("project", ""))
+		p
+			label(for="rootdir") Root directory:
+			input#rootdir(type="text", name="rootdir", value=req.form.get("rootdir", "/"))
+			| (should usually be "/")
 		- if (error.length)
 			p.error
 				- foreach (ln; error.splitLines)

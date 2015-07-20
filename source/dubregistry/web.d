@@ -372,12 +372,13 @@ class DubRegistryWebFrontend {
 	}
 
 	@auth @path("/register_package") @errorDisplay!getRegisterPackage
-	void postRegisterPackage(string kind, string owner, string project, User _user)
+	void postRegisterPackage(string kind, string owner, string project, string rootdir, User _user)
 	{
 		Json rep = Json.emptyObject;
 		rep["kind"] = kind;
 		rep["owner"] = owner;
 		rep["project"] = project;
+		rep["rootDir"] = rootdir;
 		m_registry.addPackage(rep, _user.id);
 		redirect("/my_packages");
 	}

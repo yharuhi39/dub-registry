@@ -19,20 +19,22 @@ class BitbucketRepository : Repository {
 	private {
 		string m_owner;
 		string m_project;
+		string m_rootDir;
 	}
 
 	static void register()
 	{
 		Repository factory(Json info){
-			return new BitbucketRepository(info.owner.get!string, info.project.get!string);
+			return new BitbucketRepository(info.owner.get!string, info.project.get!string, info.project.opt!string);
 		}
 		addRepositoryFactory("bitbucket", &factory);
 	}
 
-	this(string owner, string project)
+	this(string owner, string project, string root_dir)
 	{
 		m_owner = owner;
 		m_project = project;
+		m_rootDir = root_dir.length ? validateRootPath(root_dir) : "/";
 	}
 
 	RefInfo[] getTags()
