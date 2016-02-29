@@ -7,6 +7,8 @@ block body
 	- import vibe.data.json;
 	- import dubregistry.web : Category;
 	- auto pack = registry.getPackageInfo(packageName, true);
+	- auto latest = pack.versions.length ? pack.versions[pack.versions.length-1] : Json(null);
+	- auto latest_ver = latest.type == Json.Type.Object ? latest["version"].opt!string : "-";
 
 	h2 General information
 
@@ -15,9 +17,8 @@ block body
 		dd
 			a(href="#{req.rootDir}packages/#{packageName}")= packageName
 
-		- auto latest = pack.versions.length ? pack.versions[pack.versions.length-1] : Json(null);
 		dt Latest version
-		dd= latest.type == Json.Type.Object ? latest["version"].opt!string : "-"
+		dd= latest_ver
 
 	form(method="POST", action="#{req.rootDir}my_packages/#{packageName}/remove")
 		button(type="submit") Remove this package
@@ -61,6 +62,33 @@ block body
 			- foreach_reverse (e; pack.errors)
 				li.error= e.get!string
 
+	h2 Badges
+
+	p The following snippets can be used inside the project's README.md or on a website to display download statistics and a link to the DUB package:
+
+	- void shield(string path, string caption)
+		h3= caption
+		img(src="https://img.shields.io/dub/#{path}")
+		br
+		| Markdown: code.copy-paste-snippet [![shields.io download badge](https://img.shields.io/dub/#{path})](https://code.dlang.org/packages/#{packageName})
+		br
+		| HTML: code.copy-paste-snippet &lt;a href="https://code.dlang.org/packages/#{packageName}"&gt;&lt;img alt="shields.io download badge" src="https://img.shields.io/dub/#{path}"&gt&lt;/a&gt;
+
+	- shield("dd/"~packageName~".svg", "Daily downloads (all versions)");
+	- shield("dw/"~packageName~".svg", "Weekly downloads (all versions)");
+	- shield("dm/"~packageName~".svg", "Monthly downloads (all versions)");
+	- shield("dt/"~packageName~".svg", "Total downloads (all versions)");
+	- shield("dd/"~packageName~"/latest.svg", "Daily downloads (latest version)");
+	- shield("dw/"~packageName~"/latest.svg", "Weekly downloads (latest version)");
+	- shield("dm/"~packageName~"/latest.svg", "Monthly downloads (latest version)");
+	- shield("dt/"~packageName~"/latest.svg", "Total downloads (latest version)");
+	- if (latest_ver != "-")
+		- shield("dd/"~packageName~"/"~latest_ver~".svg", "Daily downloads ("~latest_ver~")");
+		- shield("dw/"~packageName~"/"~latest_ver~".svg", "Weekly downloads ("~latest_ver~")");
+		- shield("dm/"~packageName~"/"~latest_ver~".svg", "Monthly downloads ("~latest_ver~")");
+		- shield("dt/"~packageName~"/"~latest_ver~".svg", "Total downloads ("~latest_ver~")");
+
+
 	h2 Repository
 
 	- if (error.length)
@@ -68,8 +96,13 @@ block body
 
 	form(method="POST", action="#{req.rootDir}my_packages/#{packageName}/set_repository")
 		select(name="kind", size="1")
-			option(value="github", selected=pack.repository.kind == "github") GitHub project
-			option(value="bitbucket", selected=pack.repository.kind == "bitbucket") Bitbucket project
+			- import dubregistry.repositories.repository;
+			- if (supportsRepositoryKind("github"))
+				option(value="github", selected=pack.repository.kind == "github") GitHub project
+			- if (supportsRepositoryKind("bitbucket"))
+				option(value="bitbucket", selected=pack.repository.kind == "bitbucket") Bitbucket project
+			- if (supportsRepositoryKind("gitlab"))
+				option(value="gitlab", selected=pack.repository.kind == "gitlab") GitLab project
 		p
 			label(for="owner") Repository owner:
 			input(type="text", name="owner", value=pack.repository.owner.get!string)
